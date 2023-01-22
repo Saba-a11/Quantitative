@@ -7,11 +7,15 @@ def _edate_0(dt, m):
     return pd.to_datetime(dt) + pd.tseries.offsets.DateOffset(months=m)
 _edate = np.vectorize(_edate_0)
 
-
 def edate(dt, m):
     return _edate(dt, np.array(m))[()]
 
 def Cpn_Create_date(issue,mat, freq ):
+    '''
+    issue date in Jalali format, e.g., '1401/11/02'
+    maturity date in Jalali format, e.g., '1401/11/02'
+    freq is frequency, e.g., 1,2,3,4,6,12 
+    '''
     year_i, month_i, day_i = int(issue[0:4]), int(issue[5:7]), int(issue[8:10])
     year_m, month_m, day_m = int(mat[0:4]), int(mat[5:7]), int(mat[8:10])
     month = int(month_i)
@@ -50,7 +54,7 @@ def Cpn_Create_date(issue,mat, freq ):
     data [ 'extra_days'] = extra_days
     data.sort_values('Ad_cpn_date', inplace = True)
     data.reset_index(drop = True, inplace= True)
-    return data
+    return data[['Ad_cpn_date', 'Jli_cpn_date']]
 
-cp = Cpn_Create_date('14011025', '14110620', 6)
-print(cp)
+print(Cpn_Create_date('1401/10/25', '1411/06/20', 6))
+
