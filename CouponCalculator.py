@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from persiantools.jdatetime import JalaliDate
 
-def Cpn_Create_date(IssueDate,MaturityDate, Frequency ):
+def CouponCalculator(IssueDate,MaturityDate, Frequency ):
     '''
     IssueDdate in Jalali format, e.g., '1401/11/02'
     MaturityDate in Jalali format, e.g., '1401/11/02'
@@ -14,8 +14,7 @@ def Cpn_Create_date(IssueDate,MaturityDate, Frequency ):
     YearStart = int(YearIssue)
     MonthStart = int(MonthIssue)
     DayStart = int(DayIssue)
-    MonthFreq = int(12/ Frequency)
-      
+    MonthFreq = int(12/ Frequency)      
     CpnDate = {}
     extra_days = 0
     i= 0
@@ -32,8 +31,7 @@ def Cpn_Create_date(IssueDate,MaturityDate, Frequency ):
         elif (MonthStart ==12) and (DayIssue in (31, 30)) :
             DayStart = 29
         else : DayStart = DayIssue
-        if (JalaliDate(YearMat, MonthMat, DayMat) - JalaliDate(YearStart, MonthStart, DayStart)).days < 6 :
-            extra_days = (JalaliDate(YearMat, MonthMat, DayMat) - JalaliDate(YearStart, MonthStart, DayStart)).days
+        if (JalaliDate(YearMat, MonthMat, DayMat) - JalaliDate(YearStart, MonthStart, DayStart)).days < 6 :            
             break
         MiladiCpnDate = JalaliDate(YearStart, MonthStart, DayStart).to_gregorian()
         JalaliCpnDate = JalaliDate(YearStart, MonthStart, DayStart)
@@ -43,10 +41,9 @@ def Cpn_Create_date(IssueDate,MaturityDate, Frequency ):
     CpnDate[i+1] = (JalaliDate(YearMat, MonthMat, DayMat).to_gregorian(), JalaliDate(YearMat, MonthMat, DayMat))
     CpnDate[i+2] = (JalaliDate(YearIssue, MonthIssue, DayIssue).to_gregorian(), JalaliDate(YearIssue, MonthIssue, DayIssue))
     Coupons = pd.DataFrame(list(CpnDate.values()), columns=['MiladiCpnDate', 'JalaliCpnDate'])
-    Coupons [ 'extra_days'] = extra_days
     Coupons.sort_values('MiladiCpnDate', inplace = True)
     Coupons.reset_index(drop = True, inplace= True)
-    return Coupons[['MiladiCpnDate', 'JalaliCpnDate']]
+    return Coupons
 
-# print(Cpn_Create_date('1401/10/30', '1411/06/20', 6))
+print(CouponCalculator('1401/10/30', '1402/06/20', 6))
 
