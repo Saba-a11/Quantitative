@@ -10,51 +10,51 @@ _edate = np.vectorize(_edate_0)
 def edate(dt, m):
     return _edate(dt, np.array(m))[()]
 
-def Cpn_Create_date(issue,mat, freq ):
+def Cpn_Create_date(IssueDate,MaturityDate, Frequency ):
     '''
-    issue date in Jalali format, e.g., '1401/11/02'
-    maturity date in Jalali format, e.g., '1401/11/02'
-    freq is frequency, e.g., 1,2,3,4,6,12 
+    IssueDdate in Jalali format, e.g., '1401/11/02'
+    MaturityDate in Jalali format, e.g., '1401/11/02'
+    Frequency must be in valid amount, e.g., 1,2,3,4,6,12
     '''
-    year_i, month_i, day_i = int(issue[0:4]), int(issue[5:7]), int(issue[8:10])
-    year_m, month_m, day_m = int(mat[0:4]), int(mat[5:7]), int(mat[8:10])
-    month = int(month_i)
-    day = int(day_i)
-    year = int(year_i)
-    month_freq = int(12/ freq)
-    cpn_date = {}
+    YearIssue, MonthIssue, DayIssue = int(IssueDate[0:4]), int(IssueDate[5:7]), int(IssueDate[8:10])
+    YearMat, MonthMat, DayMat = int(MaturityDate[0:4]), int(MaturityDate[5:7]), int(MaturityDate[8:10])
+    month = int(MonthIssue)
+    day = int(DayIssue)
+    year = int(YearIssue)
+    MonthFreq = int(12/ Frequency)
+    CpnDate = {}
     extra_days = 0
     i= 0
-    while (JalaliDate(year_m, month_m, day_m) - JalaliDate(year, month, day)).days> 6:
-        month +=month_freq
+    while (JalaliDate(YearMat, MonthMat, DayMat) - JalaliDate(year, month, day)).days> 6:
+        month +=MonthFreq
         if month > 12:
             month = month - 12
             year += 1
-        if  ( (month > 6) and (month !=12)) and (day_i == 31) :
+        if  ( (month > 6) and (month !=12)) and (DayIssue == 31) :
             day = 30
-        elif ((month<7) and (month!=12) and (day_i==30)):
+        elif ((month<7) and (month!=12) and (DayIssue==30)):
             day= 31
-        elif (month ==12) and (day_i in (31, 30)) :
+        elif (month ==12) and (DayIssue in (31, 30)) :
             day = 29
-        else : day = day_i
+        else : day = DayIssue
 
-        if (JalaliDate(year_m, month_m, day_m) - JalaliDate(year, month, day)).days < 6 :
-            extra_days = (JalaliDate(year_m, month_m, day_m) - JalaliDate(year, month, day)).days
+        if (JalaliDate(YearMat, MonthMat, DayMat) - JalaliDate(year, month, day)).days < 6 :
+            extra_days = (JalaliDate(YearMat, MonthMat, DayMat) - JalaliDate(year, month, day)).days
             break
 
-        Ad_cpn_date = JalaliDate(year, month, day).to_gregorian()
-        Jli_cpn_date = JalaliDate(year, month, day)
-        cpn_date[i] = (Ad_cpn_date, Jli_cpn_date)
+        MiladiCpnDate = JalaliDate(year, month, day).to_gregorian()
+        JalaliCpnDate = JalaliDate(year, month, day)
+        CpnDate[i] = (MiladiCpnDate, JalaliCpnDate)
         i += 1
 
-    cpn_date[i+1] = (JalaliDate(year_m, month_m, day_m).to_gregorian(), JalaliDate(year_m, month_m, day_m))
-    cpn_date[i+2] = (JalaliDate(year_i, month_i, day_i).to_gregorian(), JalaliDate(year_i, month_i, day_i))
+    CpnDate[i+1] = (JalaliDate(YearMat, MonthMat, DayMat).to_gregorian(), JalaliDate(YearMat, MonthMat, DayMat))
+    CpnDate[i+2] = (JalaliDate(YearIssue, MonthIssue, DayIssue).to_gregorian(), JalaliDate(YearIssue, MonthIssue, DayIssue))
 
-    data = pd.DataFrame(list(cpn_date.values()), columns=['Ad_cpn_date', 'Jli_cpn_date'])
-    data [ 'extra_days'] = extra_days
-    data.sort_values('Ad_cpn_date', inplace = True)
-    data.reset_index(drop = True, inplace= True)
-    return data[['Ad_cpn_date', 'Jli_cpn_date']]
+    Coupons = pd.DataFrame(list(CpnDate.values()), columns=['MiladiCpnDate', 'JalaliCpnDate'])
+    Coupons [ 'extra_days'] = extra_days
+    Coupons.sort_values('MiladiCpnDate', inplace = True)
+    Coupons.reset_index(drop = True, inplace= True)
+    return Coupons[['MiladiCpnDate', 'JalaliCpnDate']]
 
 print(Cpn_Create_date('1401/10/25', '1411/06/20', 6))
 
