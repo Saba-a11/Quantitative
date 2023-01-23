@@ -45,5 +45,5 @@ def CouponCalculator(IssueDate,MaturityDate, Frequency ):
     Coupons.reset_index(drop = True, inplace= True)
     return Coupons
 
-print(CouponCalculator('1401/10/30', '1402/06/20', 6))
+# print(CouponCalculator('1401/10/30', '1402/06/20', 6))
 
