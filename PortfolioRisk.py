@@ -193,7 +193,6 @@ def plot_ef2(n_points, er, cov):
 
 
 from scipy.optimize import minimize
-
 def minimize_vol(target_return, er, cov):
     """
     Returns the optimal weights that achieve the target return
