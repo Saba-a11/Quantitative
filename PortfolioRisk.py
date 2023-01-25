@@ -299,5 +299,5 @@ def plot_ef(n_points, er, cov, style='.-', legend=False, show_cml=False, riskfre
         vol_gmv = portfolio_vol(w_gmv, cov)
         # add EW
         ax.plot([vol_gmv], [r_gmv], color='midnightblue', marker='o', markersize=10)
-        
+                
         return ax
